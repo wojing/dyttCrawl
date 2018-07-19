@@ -23,7 +23,6 @@ class DyttcrawlItem(scrapy.Item):
     subtitles = scrapy.Field()
     IMDB_score = scrapy.Field()
     douban_score = scrapy.Field()
-    publish = scrapy.Field()
     director = scrapy.Field()
     format = scrapy.Field()
     resolution = scrapy.Field()

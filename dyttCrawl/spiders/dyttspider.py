@@ -51,60 +51,112 @@ class DyttSpider(scrapy.Spider):
         item['title'] = title
 
         content = response.xpath('//div[@id="Zoom"]/td/p/text()').extract()
-
+        # print(content)
 
         if  len(content):
-            for each in content:
-                if each.startswith('◎译\u3000\u3000名'):
-                    print("yes")
-                    # 译名 ◎译\u3000\u3000名\u3000  一共占居6位
-                    item['trans_name'] = each[6: len(each)].strip()
-                elif each[0:5] == '◎片\u3000\u3000名':
-                    # 片名
-                    item['full_name'] = each[6: len(each)].strip()
-                elif each[0:5] == '◎年\u3000\u3000代':
-                    # 年份
-                    item['decade'] = each[6: len(each)].strip()
-                elif each[0:5] == '◎产\u3000\u3000地':
-                    # 产地
-                    item['country'] = each[6: len(each)].strip()
-                elif each[0:5] == '◎类\u3000\u3000别':
-                    # 类别
-                    item['film_type'] = each[6: len(each)].strip()
-                elif each[0:5] == '◎语\u3000\u3000言':
-                    # 语言
-                    item['language'] = each[6: len(each)].strip()
-                elif each[0:5] == '◎字\u3000\u3000幕':
-                    # 字幕
-                    item['subtitles'] = each[6: len(each)].strip()
-                elif each[0:5] == '◎上映日期':
-                    # 上映日期
-                    item['publish'] = each[6: len(each)].strip()
-                elif each[0:7] == '◎IMDb评分':
-                    # IMDb评分
-                    item['IMDB_score'] = each[9: len(each)].strip()
-                elif each[0:5] == '◎豆瓣评分':
-                    # 豆瓣评分
-                    item['douban_score'] = each[6: len(each)].strip()
-                elif each[0:5] == '◎文件格式':
-                    # 文件格式
-                    item['format'] = each[6: len(each)].strip()
-                elif each[0:5] == '◎视频尺寸':
-                    # 视频尺寸
-                    item['resolution'] = each[6: len(each)].strip()
-                elif each[0:5] == '◎文件大小':
-                    # 文件大小
-                    item['size'] = each[6: len(each)]
-                elif each[0:5] == '◎片\u3000\u3000长':
-                    # 片长
-                    item['duration'] = each[6: len(each)]
-                elif each[0:5] == '◎导\u3000\u3000演':
-                    # 导演
-                    item['director'] = each[6: len(each)]
-                elif each[0:5] == '◎主\u3000\u3000演':
-                    # 主演
-                    item['actor'] = each[6: len(each)]
+            it = iter(content)
+            while True:
+                try:
+                    each = next(it)
+                    if each.startswith('◎译\u3000\u3000名'):
+                        print("yes")
+                        # 译名 ◎译\u3000\u3000名\u3000  一共占居6位
+                        item['trans_name'] = each[6: len(each)].strip()
+                    elif each[0:5] == '◎片\u3000\u3000名':
+                        # 片名
+                        item['full_name'] = each[6: len(each)].strip()
+                    elif each[0:5] == '◎年\u3000\u3000代':
+                        # 年份
+                        item['decade'] = each[6: len(each)].strip()
+                    elif each[0:5] == '◎产\u3000\u3000地':
+                        # 产地
+                        item['country'] = each[6: len(each)].strip()
+                    elif each[0:5] == '◎类\u3000\u3000别':
+                        # 类别
+                        item['film_type'] = each[6: len(each)].strip()
+                    elif each[0:5] == '◎语\u3000\u3000言':
+                        # 语言
+                        item['language'] = each[6: len(each)].strip()
+                    elif each[0:5] == '◎字\u3000\u3000幕':
+                        # 字幕
+                        item['subtitles'] = each[6: len(each)].strip()
+                    elif each[0:5] == '◎上映日期':
+                        # 上映日期
+                        item['publish_time'] = each[6: len(each)].strip()
+                    elif each[0:7] == '◎IMDb评分':
+                        # IMDb评分
+                        item['IMDB_score'] = each[9: len(each)].strip()
+                    elif each[0:5] == '◎豆瓣评分':
+                        # 豆瓣评分
+                        item['douban_score'] = each[6: len(each)].strip()
+                    elif each[0:5] == '◎文件格式':
+                        # 文件格式
+                        item['format'] = each[6: len(each)].strip()
+                    elif each[0:5] == '◎视频尺寸':
+                        # 视频尺寸
+                        item['resolution'] = each[6: len(each)].strip()
+                    elif each[0:5] == '◎文件大小':
+                        # 文件大小
+                        item['size'] = each[6: len(each)].strip()
+                    elif each[0:5] == '◎片\u3000\u3000长':
+                        # 片长
+                        item['duration'] = each[6: len(each)].strip()
+                    elif each[0:5] == '◎导\u3000\u3000演':
+                        # 导演
+                        item['director'] = each[6: len(each)].strip()
+                    elif each[0:5] == '◎主\u3000\u3000演':
+                        # 主演
+                        item['actor'] = each[6: len(each)].strip()
+                    elif each[0:5] =='\u3000\u3000\u3000\u3000\u3000\u3000':
+                        item['actor'] = item['actor'] + " " + each[6:len(each)].strip()
+                    elif each[0:5] == '◎简\u3000\u3000介':
+                        item['introduction'] = next(it)[6:]
+                except StopIteration:
+                    break
 
-        print(item)
-        # https: // www.jianshu.com / p / c2b276c0d267
+                # 下载地址
+            magnet_link = response.xpath("//div[@class='co_content8']/ul/tr/td/div/td/table/tbody/tr/td/a/text()")
+
+            # 为了兼容 2012 年前的页面
+            if not len(magnet_link):
+                magnet_link = response.xpath(
+                    "//div[@class='co_content8']/ul/tr/td/div/div/td/table/tbody/tr/td/font/a/text()")
+
+            if not len(magnet_link):
+                magnet_link = response.xpath("//div[@class='co_content8']/ul/tr/td/div/div/td/table/tbody/tr/td/a/text()")
+
+            if not len(magnet_link):
+                magnet_link = response.xpath(
+                    "//div[@class='co_content8']/ul/tr/td/div/div/td/div/table/tbody/tr/td/font/a/text()")
+
+            if not len(magnet_link):
+                magnet_link = response.xpath("//div[@class='co_content8']/ul/tr/td/div/td/div/table/tbody/tr/td/a/text()")
+
+            if not len(magnet_link):
+                magnet_link = response.xpath("//div[@class='co_content8']/ul/tr/td/div/td/table/tbody/tr/td/a/text()")
+
+            if not len(magnet_link):
+                magnet_link = response.xpath("//div[@class='co_content8']/ul/tr/td/div/div/td/p/span/a/text()")
+
+            if not len(magnet_link):
+                magnet_link = response.xpath(
+                    "//div[@class='co_content8']/ul/tr/td/div/div/td/div/div/table/tbody/tr/td/font/a/text()")
+
+            if not len(magnet_link):
+                magnet_link = response.xpath(
+                    "//div[@class='co_content8']/ul/tr/td/div/div/td/span/table/tbody/tr/td/font/a/text()")
+
+            if not len(magnet_link):
+                magnet_link = response.xpath(
+                    "//div[@class='co_content8']/ul/tr/td/div/div/td/div/span/div/table/tbody/tr/td/font/a/text()")
+
+            item['magnet_link'] = magnet_link.extract()[0]
+
+            imgs = response.xpath("//div[@class='co_content8']/ul/tr/td/div/td/p/img/@src")
+            if imgs[0] != None:
+                item['image_link'] = imgs[0].extract()
+
+
+        yield item
+        # https://www.jianshu.com/p/c2b276c0d267
         pass
