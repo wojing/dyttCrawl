@@ -9,3 +9,8 @@
 class DyttcrawlPipeline(object):
     def process_item(self, item, spider):
         return item
+
+class SqlitePipelines(object):
+
+    def __init__(self):
+        self.db =
