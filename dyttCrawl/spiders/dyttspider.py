@@ -1,6 +1,7 @@
 import scrapy
 
 from scrapy.selector import Selector
+from dyttCrawl.items import DyttcrawlItem
 
 
 class DyttSpider(scrapy.Spider):
@@ -43,62 +44,67 @@ class DyttSpider(scrapy.Spider):
 
     def parseDetail(self, response):
 
+        item = DyttcrawlItem()
 
         title = response.xpath('//div[@class="bd3r"]/div[@class="co_area2"]/div[@class="title_all"]/h1/font/text()')[0].extract()
 
-        content = response.xpath('//div[@id="Zoom"]/td/p/text()')
-        print(content)
+        item['title'] = title
 
-        if not len(content):
+        content = response.xpath('//div[@id="Zoom"]/td/p/text()').extract()
+
+
+        if  len(content):
             for each in content:
-                if each[0:5] == '◎译\u3000\u3000名':
+                if each.startswith('◎译\u3000\u3000名'):
+                    print("yes")
                     # 译名 ◎译\u3000\u3000名\u3000  一共占居6位
-                    contentDir['trans_name'] = each[6: len(each)]
+                    item['trans_name'] = each[6: len(each)].strip()
                 elif each[0:5] == '◎片\u3000\u3000名':
                     # 片名
-                    contentDir['name'] = each[6: len(each)]
+                    item['full_name'] = each[6: len(each)].strip()
                 elif each[0:5] == '◎年\u3000\u3000代':
                     # 年份
-                    contentDir['decade'] = each[6: len(each)]
+                    item['decade'] = each[6: len(each)].strip()
                 elif each[0:5] == '◎产\u3000\u3000地':
                     # 产地
-                    contentDir['conutry'] = each[6: len(each)]
+                    item['country'] = each[6: len(each)].strip()
                 elif each[0:5] == '◎类\u3000\u3000别':
                     # 类别
-                    contentDir['level'] = each[6: len(each)]
+                    item['film_type'] = each[6: len(each)].strip()
                 elif each[0:5] == '◎语\u3000\u3000言':
                     # 语言
-                    contentDir['language'] = each[6: len(each)]
+                    item['language'] = each[6: len(each)].strip()
                 elif each[0:5] == '◎字\u3000\u3000幕':
                     # 字幕
-                    contentDir['subtitles'] = each[6: len(each)]
+                    item['subtitles'] = each[6: len(each)].strip()
                 elif each[0:5] == '◎上映日期':
                     # 上映日期
-                    contentDir['publish'] = each[6: len(each)]
+                    item['publish'] = each[6: len(each)].strip()
                 elif each[0:7] == '◎IMDb评分':
                     # IMDb评分
-                    contentDir['IMDB_socre'] = each[9: len(each)]
+                    item['IMDB_score'] = each[9: len(each)].strip()
                 elif each[0:5] == '◎豆瓣评分':
                     # 豆瓣评分
-                    contentDir['douban_score'] = each[6: len(each)]
+                    item['douban_score'] = each[6: len(each)].strip()
                 elif each[0:5] == '◎文件格式':
                     # 文件格式
-                    contentDir['format'] = each[6: len(each)]
+                    item['format'] = each[6: len(each)].strip()
                 elif each[0:5] == '◎视频尺寸':
                     # 视频尺寸
-                    contentDir['resolution'] = each[6: len(each)]
+                    item['resolution'] = each[6: len(each)].strip()
                 elif each[0:5] == '◎文件大小':
                     # 文件大小
-                    contentDir['size'] = each[6: len(each)]
+                    item['size'] = each[6: len(each)]
                 elif each[0:5] == '◎片\u3000\u3000长':
                     # 片长
-                    contentDir['duration'] = each[6: len(each)]
+                    item['duration'] = each[6: len(each)]
                 elif each[0:5] == '◎导\u3000\u3000演':
                     # 导演
-                    contentDir['director'] = each[6: len(each)]
+                    item['director'] = each[6: len(each)]
                 elif each[0:5] == '◎主\u3000\u3000演':
                     # 主演
-                    actor = each[6: len(each)]
+                    item['actor'] = each[6: len(each)]
 
+        print(item)
         # https: // www.jianshu.com / p / c2b276c0d267
         pass
